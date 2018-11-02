@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.rectdiagstepview
  * Created by anweshmishra on 02/11/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.MotionEvent
@@ -200,6 +201,14 @@ class RectDiagStepView(ctx : Context) : View(ctx) {
                     view.postInvalidate()
                 }
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : RectDiagStepView {
+            val view : RectDiagStepView = RectDiagStepView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
