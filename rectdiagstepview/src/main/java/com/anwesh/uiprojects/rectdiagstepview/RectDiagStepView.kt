@@ -33,7 +33,7 @@ fun Canvas.drawRDSNode(i : Int, scale : Float, paint : Paint) {
             save()
             translate(size, size)
             rotate(45f * j)
-            drawLine(0f, 0f, -a * sc, 0f)
+            drawLine(0f, 0f, -a * sc, 0f, paint)
             restore()
             restore()
         }
@@ -104,6 +104,50 @@ class RectDiagStepView(ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class RDSNode(var i : Int, val state : State = State()) {
+
+        private var next : RDSNode? = null
+        private var prev : RDSNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = RDSNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawRDSNode(i, state.scale, paint)
+            prev?.draw(canvas, paint)
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            state.update {
+                cb(i, it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : RDSNode {
+            var curr : RDSNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
