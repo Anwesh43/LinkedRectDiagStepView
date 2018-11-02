@@ -150,4 +150,28 @@ class RectDiagStepView(ctx : Context) : View(ctx) {
             return this
         }
     }
+
+    data class RectDiagStep(var i : Int) {
+
+        private var curr : RDSNode = RDSNode(0)
+
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint)
+        }
+        
+        fun upate(cb : (Int, Float) -> Unit) {
+            curr.update {i, scl ->
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(i, scl)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+    }
 }
