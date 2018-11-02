@@ -160,8 +160,8 @@ class RectDiagStepView(ctx : Context) : View(ctx) {
         fun draw(canvas : Canvas, paint : Paint) {
             curr.draw(canvas, paint)
         }
-        
-        fun upate(cb : (Int, Float) -> Unit) {
+
+        fun update(cb : (Int, Float) -> Unit) {
             curr.update {i, scl ->
                 curr = curr.getNext(dir) {
                     dir *= -1
@@ -172,6 +172,32 @@ class RectDiagStepView(ctx : Context) : View(ctx) {
 
         fun startUpdating(cb : () -> Unit) {
             curr.startUpdating(cb)
+        }
+    }
+
+    data class Renderer(var view : RectDiagStepView) {
+
+        private val animator : Animator = Animator()
+        private val rds : RectDiagStep = RectDiagStep(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#BDBDBD"))
+            rds.draw(canvas, paint)
+            animator.animate({
+                rds.update {i, scl ->
+                    animator.stop()
+                }
+            }, {
+                view.invalidate()
+            })
+        }
+
+        fun handleTap() {
+            rds.startUpdating {
+                animator.start {
+                    view.postInvalidate()
+                }
+            }
         }
     }
 }
