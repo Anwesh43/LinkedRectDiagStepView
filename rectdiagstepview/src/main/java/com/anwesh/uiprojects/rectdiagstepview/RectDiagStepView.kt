@@ -78,4 +78,32 @@ class RectDiagStepView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class Animator(var animated : Boolean = false) {
+
+        fun animate(cb : () -> Unit, viewcb : () -> Unit) {
+            if (animated) {
+                cb()
+                try {
+                    Thread.sleep(50)
+                    viewcb()
+                } catch(ex : Exception) {
+
+                }
+            }
+        }
+
+        fun start(startcb : () -> Unit) {
+            if (!animated) {
+                animated = true
+                startcb()
+            }
+        }
+
+        fun stop() {
+            if (animated) {
+                animated = false
+            }
+        }
+    }
 }
