@@ -12,3 +12,32 @@ import android.graphics.Color
 import android.graphics.Canvas
 
 val nodes : Int = 5
+
+fun Canvas.drawRDSNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = w / (nodes + 1)
+    paint.strokeWidth = Math.min(w, h) / 60
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.color = Color.parseColor("#43A047")
+    val size : Float = gap / 3
+    save()
+    translate(gap * i + gap, h / 2)
+    for (j in 0..1) {
+        val sc : Float = Math.min(0.5f, Math.max(0f, scale - 0.5f * j)) * 2
+        val a : Float = 2 * size * (1 - j) + size * j * Math.sqrt(2.0).toFloat()
+        save()
+        for (k in 0..3) {
+            save()
+            rotate(90f * k)
+            save()
+            translate(size, size)
+            rotate(45f * j)
+            drawLine(0f, 0f, -a * sc, 0f)
+            restore()
+            restore()
+        }
+        restore()
+    }
+    restore()
+}
